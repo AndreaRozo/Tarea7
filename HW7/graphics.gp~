@@ -1,6 +1,0 @@
-set terminal jpeg
-set output 'GraficaR.jpg'
-set title "R como función del tiempo"
-set xlabel "t"
-set ylabel "R(t)"
-plot 'fileOut.txt' using 1:2
