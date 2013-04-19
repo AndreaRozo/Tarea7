@@ -43,14 +43,6 @@ if (len(sys.argv)== 2):
     # Espectro de potencias
     f2 = abs(fft_radio_shift)
 
-    fig1 = plt.figure()
-    pylab.plot(freq_shifted,abs(f2))
-    pylab.xlabel('$algo$')
-    pylab.ylabel('$algo mas$')
-    pylab.title('$\mathrm{Espectro\ de\ potencias\ del\ numero\ de\ manchas}$', fontsize=20)
-    pylab.grid(True)
-    pylab.savefig('Graph1')
-
     # Periodo - Hallar el Maximo
     m = np.where(f2 == f2.max())
     freqMax = float(freq_shifted[m[0][1]])
