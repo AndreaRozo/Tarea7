@@ -1,4 +1,4 @@
-// Universidad de los Andes
+﻿// Universidad de los Andes
 // Física computacional
 // Tarea 7
 // Archivo con el programa principal
@@ -53,7 +53,7 @@ int main()
 	strcat(nombreArchivo,".txt");
 	
 	fileOut = fopen(nombreArchivo,"w");
-	fprintf(fileOut, "%f	%f	%f\n", t[0], r[0], v[0]);
+	fprintf(fileOut, "%f	%f	%f	%f\n", t[0], r[0], v[0],p[0]);
 
 	for (i=1; i<n_points; i++)
 	{
