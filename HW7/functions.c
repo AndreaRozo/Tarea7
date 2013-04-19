@@ -15,7 +15,7 @@
 #define P0 5.6e-6 // [m/r*t**2]
 #define M 1.0e5 // [m]
 #define m 1.0 // [m]
-#define gamma 5/3
+#define gamma 1.666666
 #define G 6.6738e-9
 #define pi 3.1415972
 
@@ -26,7 +26,8 @@ double functionR (double t, double r, double v)
 
 double functionV (double t, double r, double v)
 {
-	double cte = 4*pi*P0*pow(R0,3*gamma)/m;       
-	return (-G*M/R**2 + cte*pow(r,2-3*gamma));
+	double cte = 4*pi*P0*pow(R0,5)/m; // 5 = 3*5/3
+	double r2 = pow(r,2);
+	double r3 = r*r*r;
+	return (-G*M/r2 + cte/r3);
 }
-

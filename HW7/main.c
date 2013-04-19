@@ -1,6 +1,6 @@
 // Universidad de los Andes
 // Física computacional
-// Tarea 6
+// Tarea 7
 // Archivo con el programa principal
 // Autores:
 //	Andrés Felipe García Albarracín
@@ -15,17 +15,20 @@
 #include <time.h>
 
 #define tInicial 0.0
-#define tFinal 30.0
+#define tFinal 1500
+#define R0 1.7 // [r]
+#define v0 0 // [cm/s]
+#define P0 5.6e-6 // [m/r*t**2]
 
 int main()
 {
-	int j;	
 	int i;
-	double h = 0.01;
+	double h = 1;
 	int n_points = tFinal/h;
 	double *t = malloc(n_points*sizeof(double));
 	double *r = malloc(n_points*sizeof(double));
 	double *v = malloc(n_points*sizeof(double));
+	double *p = malloc(n_points*sizeof(double));
 	double *k1 = malloc(2*sizeof(double));
 	double *k2 = malloc(2*sizeof(double));
 	double *k3 = malloc(2*sizeof(double));
@@ -35,68 +38,36 @@ int main()
 	FILE	*fileGrap;
 	srand48 (time(NULL));
 
-	fileGrap = fopen("graphics.gp","w");
-	fprintf(fileGrap, "set terminal jpeg\n");
-
-	if(!t || !r || !v || !k1 || !k2 || !k3 || !k4)
+	if(!t || !r || !v || !k1 || !k2 || !k3 || !k4 || !p)
 	{
 		printf("Problema creando alguno de los arreglos");
 		exit(1);
 	}
 	
-	for (j = 0; j<10; j++)
-	{
-		
-		double Xini = drand48()*20-10;
-		double Yini = drand48()*20-10;
-		double Zini = drand48()*20-10;
+	// Condiciones iniciales
+	r[0] = R0;
+	v[0] = v0;
+	p[0] = P0;
 
-		// Condiciones iniciales
-		t[0] = tInicial;	
-		x[0] = Xini;
-		y[0] = Yini;
-		z[0] = Zini;
-
-		char nombreArchivo[256] = "fileOut";
-		char num[5];
-		sprintf(num,"%d",j);
-		strcat(nombreArchivo,num);
-		strcat(nombreArchivo,".txt");
-		
-		fileOut = fopen(nombreArchivo,"w");
-		fprintf(fileOut, "%f	%f	%f	%f\n", t[0], x[0], y[0], z[0]);
+	char nombreArchivo[256] = "fileOut";
+	strcat(nombreArchivo,".txt");
 	
-		for (i=1; i<n_points; i++)
-		{
-			t[i] = i*h + tInicial;		
-			slopeXYZ(t[i-1], x[i-1], y[i-1], z[i-1], h, k1, k2, k3, k4, slope);
-			x[i] = x[i-1] + h*slope[0];
-			y[i] = y[i-1] + h*slope[1];
-			z[i] = z[i-1] + h*slope[2];
-			fprintf(fileOut, "%f	%f	%f	%f\n", t[i], x[i], y[i], z[i]);
-		}
+	fileOut = fopen(nombreArchivo,"w");
+	fprintf(fileOut, "%f	%f	%f\n", t[0], r[0], v[0]);
 
-		fprintf(fileGrap, "set output 'planoxy%d.jpg'\n",j);
-		fprintf(fileGrap, "set title \"Plano x-y\"\n");
-		fprintf(fileGrap, "set xlabel \"x\"\n");
-		fprintf(fileGrap, "set ylabel \"y\"\n");
-		fprintf(fileGrap, "plot 'fileOut%i.txt' using 2:3\n",j);
-
-		fprintf(fileGrap, "set output 'planoxz%d.jpg'\n",j);
-		fprintf(fileGrap, "set title \"Plano x-z\"\n");
-		fprintf(fileGrap, "set xlabel \"x\"\n");
-		fprintf(fileGrap, "set ylabel \"z\"\n");
-		fprintf(fileGrap, "plot 'fileOut%i.txt' using 2:4\n",j);
-
-		fprintf(fileGrap, "set output 'planoyz%d.jpg'\n",j);
-		fprintf(fileGrap, "set title \"Plano y-z\"\n");
-		fprintf(fileGrap, "set xlabel \"y\"\n");
-		fprintf(fileGrap, "set ylabel \"z\"\n");
-		fprintf(fileGrap, "plot 'fileOut%i.txt' using 3:4\n",j);
-
-		fclose(fileOut);	
+	for (i=1; i<n_points; i++)
+	{
+		t[i] = i*h + tInicial;		
+		slopeRV(t[i-1], r[i-1], v[i-1], h, k1, k2, k3, k4, slope);
+		r[i] = r[i-1] + h*slope[0];
+		v[i] = v[i-1] + h*slope[1];
+		p[i] = P0*pow(R0,5.0)/(r[i]*r[i]*r[i]*r[i]*r[i]);
+		fprintf(fileOut, "%f	%f	%f	%f\n", t[i], r[i], v[i], p[i]);
 	}
-	fclose(fileGrap);		
+
+
+	fclose(fileOut);	
+		
 	return 0;
 
 }
